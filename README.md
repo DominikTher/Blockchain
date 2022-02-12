@@ -3,7 +3,8 @@ Very trivial and naive implementation just for my testing purposes
 
 ## Steps
 - [x] Initial app
-- [ ] Mining and transactions
+- [x] Mining
+- [ ] Transactions
 - [ ] Merkle Tree
 
 ## Deployments
