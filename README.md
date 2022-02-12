@@ -10,8 +10,8 @@ Very trivial and naive implementation just for my testing purposes
 ## Steps
 - [x] Synchronization - only basic test
 
-## Deployments
-- [ ] Single server setup
-- [ ] Horizontal scaling - load balancer
-- [ ] Data centers
-- [ ] Metrics
+## ~~Deployments~~ Will be done in new repo
+- [ ] ~~Single server setup~~
+- [ ] ~~Horizontal scaling - load balancer~~
+- [ ] ~~Data centers~~
+- [ ] ~~Metrics~~
