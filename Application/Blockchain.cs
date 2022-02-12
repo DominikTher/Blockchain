@@ -5,11 +5,11 @@ namespace Application;
 
 public sealed class Blockchain : IBlockchain
 {
-    private readonly IList<Block> blocks = new List<Block> { new() };
+    public IList<Block> blocks { get; set; } =  new List<Block> { new() };
     private readonly int proofOfWork = 2;
     private readonly int reward = 1;
 
-    private IList<Transaction> pendingTransactions = new List<Transaction>();
+    public IList<Transaction> pendingTransactions = new List<Transaction>();
 
     public void AddBlock(IEnumerable<Transaction> transactions)
     {

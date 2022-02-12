@@ -11,14 +11,13 @@ public sealed record Block
     public string Hash { get; set; } = string.Empty;
     public string PreviousHash { get; init; } = string.Empty;
     public IEnumerable<Transaction> Transactions { get; init; } = Enumerable.Empty<Transaction>();
-
-    private int nonce;
+    public int Nonce { get; set; }
 
     public string CalculateHash()
     {
         SHA256 sha256 = SHA256.Create();
 
-        byte[] inputBytes = Encoding.ASCII.GetBytes($"{TimeStamp}-{PreviousHash ?? ""}-{JsonSerializer.Serialize(Transactions)}-{nonce}");
+        byte[] inputBytes = Encoding.ASCII.GetBytes($"{TimeStamp}-{PreviousHash ?? ""}-{JsonSerializer.Serialize(Transactions)}-{Nonce}");
         byte[] outputBytes = sha256.ComputeHash(inputBytes);
 
         return Convert.ToBase64String(outputBytes);
@@ -29,7 +28,7 @@ public sealed record Block
         var leadingZeros = new string('0', proofOfWork);
         do
         {
-            nonce++;
+            Nonce++;
             Hash = CalculateHash();
         } while (Hash[..proofOfWork] != leadingZeros);
     }
