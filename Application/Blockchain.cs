@@ -6,6 +6,7 @@ namespace Application
     public sealed class Blockchain : IBlockchain
     {
         private readonly IList<Block> blocks = new List<Block> { new() };
+        public readonly int ProofOfWork = 2;
 
         public void AddBlock(string data)
         {
@@ -17,6 +18,8 @@ namespace Application
                 Data = data,
                 TimeStamp = DateTime.UtcNow,
             };
+
+            block.Mine(ProofOfWork);
 
             blocks.Add(block with { Hash = block.CalculateHash() });
         }
