@@ -5,7 +5,7 @@ Very trivial and naive implementation just for my testing purposes
 - [x] Initial app
 - [x] Mining
 - [x] Transactions
-- [ ] Merkle Tree
+- [ ] ~~Merkle Tree~~ Hash for transactions
 
 ## Deployments
 - [ ] Single server setup
