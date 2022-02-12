@@ -2,41 +2,62 @@
 using Application.Entities;
 using Microsoft.AspNetCore.Mvc;
 
-namespace PublicApi.Controllers
+namespace PublicApi.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class Blockchain : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class Blockchain : ControllerBase
+    private readonly IBlockchain blockchain;
+    
+
+    public Blockchain(IBlockchain blockchain)
     {
-        private readonly IBlockchain blockchain;
+        this.blockchain = blockchain;
+    }
 
-        public Blockchain(IBlockchain blockchain)
+    [HttpGet("getBlocks")]
+    public ActionResult<IList<Block>> GetBlocks()
+        => Ok(blockchain.GetBlocks());
+
+    //[HttpPost]
+    //public ActionResult<string> AddBlock(string data)
+    //{
+    //    blockchain.AddBlock(data);
+
+    //    return Ok(data);
+    //}
+
+    [HttpPost("createTransaction")]
+    public IActionResult CreateTransaction(string fromAddress, string toAddress, int amount)
+    {
+        blockchain.CreateTransaction(new Transaction
         {
-            this.blockchain = blockchain;
-        }
+            ToAddress = toAddress,
+            Amount = amount,
+            FromAddress = fromAddress
+        });
 
-        [HttpGet("getBlocks")]
-        public ActionResult<IList<Block>> GetBlocks()
-            => Ok(blockchain.GetBlocks());
+        return Ok();
+    }
 
-        [HttpPost]
-        public ActionResult<string> AddBlock(string data)
-        {
-            blockchain.AddBlock(data);
+    [HttpPost("processPendingTransactions")]
+    public IActionResult ProcessPendingTransactions(string minerAddress)
+    {
+        blockchain.ProcessPendingTransactions(minerAddress);
 
-            return Ok(data);
-        }
+        return Ok();
+    }
 
-        [HttpGet("isValid")]
-        public ActionResult<bool> IsValid()
-            => Ok(blockchain.IsValid());
+    [HttpGet("isValid")]
+    public ActionResult<bool> IsValid()
+        => Ok(blockchain.IsValid());
 
-        [HttpPut]
-        public IActionResult InvalidateBlock(int index, string data)
-        {
-            blockchain.InvalidateBlock(index, data);
+    [HttpPut]
+    public IActionResult InvalidateBlock(int index, string data)
+    {
+        blockchain.InvalidateBlock(index, data);
 
-            return Ok();
-        }
+        return Ok();
     }
 }

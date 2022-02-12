@@ -4,7 +4,7 @@ Very trivial and naive implementation just for my testing purposes
 ## Steps
 - [x] Initial app
 - [x] Mining
-- [ ] Transactions
+- [x] Transactions
 - [ ] Merkle Tree
 
 ## Deployments

@@ -1,54 +1,74 @@
 ﻿using Application.Contracts;
 using Application.Entities;
 
-namespace Application
+namespace Application;
+
+public sealed class Blockchain : IBlockchain
 {
-    public sealed class Blockchain : IBlockchain
+    private readonly IList<Block> blocks = new List<Block> { new() };
+    private readonly int proofOfWork = 2;
+    private readonly int reward = 1;
+
+    private IList<Transaction> pendingTransactions = new List<Transaction>();
+
+    public void AddBlock(IEnumerable<Transaction> transactions)
     {
-        private readonly IList<Block> blocks = new List<Block> { new() };
-        public readonly int ProofOfWork = 2;
-
-        public void AddBlock(string data)
+        var latestBlock = blocks.Last();
+        var block = new Block
         {
-            var latestBlock = blocks.Last();
-            var block = new Block
-            {
-                Index = latestBlock.Index + 1,
-                PreviousHash = latestBlock.Hash,
-                Data = data,
-                TimeStamp = DateTime.UtcNow,
-            };
+            Index = latestBlock.Index + 1,
+            PreviousHash = latestBlock.Hash,
+            Transactions = transactions,
+            TimeStamp = DateTime.UtcNow,
+        };
 
-            block.Mine(ProofOfWork);
+        block.Mine(proofOfWork);
 
-            blocks.Add(block with { Hash = block.CalculateHash() });
-        }
+        blocks.Add(block with { Hash = block.CalculateHash() });
+    }
 
-        public IList<Block> GetBlocks() 
-            => blocks;
+    public void CreateTransaction(Transaction transaction) 
+        => pendingTransactions.Add(transaction);
 
-        public void InvalidateBlock(int index, string data) 
-            => blocks.ElementAt(index).Data = data;
+    public IList<Block> GetBlocks()
+        => blocks;
 
-        public bool IsValid()
+    public void InvalidateBlock(int index, string data)
+    {
+        // blocks.ElementAt(index).Data = data;
+        throw new NotImplementedException();
+    }
+
+    public bool IsValid()
+    {
+        for (int index = 1; index < blocks.Count; index++)
         {
-            for (int index = 1; index < blocks.Count; index++)
+            var currentBlock = blocks[index];
+            var previousBlock = blocks[index - 1];
+
+            if (currentBlock.Hash != currentBlock.CalculateHash())
             {
-                var currentBlock = blocks[index];
-                var previousBlock = blocks[index - 1];
-
-                if (currentBlock.Hash != currentBlock.CalculateHash())
-                {
-                    return false;
-                }
-
-                if(currentBlock.PreviousHash != previousBlock.Hash)
-                {
-                    return false;
-                }
+                return false;
             }
 
-            return true;
+            if (currentBlock.PreviousHash != previousBlock.Hash)
+            {
+                return false;
+            }
         }
+
+        return true;
+    }
+
+    public void ProcessPendingTransactions(string minerAddress)
+    {
+        AddBlock(pendingTransactions);
+        pendingTransactions = new List<Transaction>();
+        CreateTransaction(new Transaction
+        {
+            FromAddress = string.Empty,
+            ToAddress = minerAddress,
+            Amount = reward
+        });
     }
 }
